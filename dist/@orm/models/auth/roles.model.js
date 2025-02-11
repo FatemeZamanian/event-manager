@@ -17,11 +17,11 @@ let RolesEntity = class RolesEntity {
 };
 exports.RolesEntity = RolesEntity;
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)('increment'),
+    (0, typeorm_1.PrimaryGeneratedColumn)("increment"),
     __metadata("design:type", Number)
 ], RolesEntity.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ name: 'title', type: 'enum', nullable: false, enum: consts_1.RoleType }),
+    (0, typeorm_1.Column)({ name: "title", type: "enum", nullable: false, enum: consts_1.RoleType }),
     __metadata("design:type", String)
 ], RolesEntity.prototype, "title", void 0);
 __decorate([
@@ -30,7 +30,7 @@ __decorate([
 ], RolesEntity.prototype, "users", void 0);
 exports.RolesEntity = RolesEntity = __decorate([
     (0, typeorm_1.Entity)({
-        name: 'rols',
+        name: "rols",
     })
 ], RolesEntity);
 //# sourceMappingURL=roles.model.js.map

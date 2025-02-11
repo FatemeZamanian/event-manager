@@ -1,22 +1,25 @@
-import { Body, Controller, Param, Patch, Post, Req } from '@nestjs/common';
+import { Body, Controller, Param, Patch, Post, Req } from "@nestjs/common";
 
-import { eventDtoIn } from './event.dto';
-import { AdminEventService } from './event.service';
-import { Request } from 'express';
+import { eventDtoIn } from "./event.dto";
 
-@Controller('admin')
+import { AdminEventService } from "./event.service";
+import { Request } from "express";
+import { ApiTags } from "@nestjs/swagger";
+
+@ApiTags("Admin / Events")
+@Controller("admin")
 export class AdminEventController {
   constructor(private readonly adminEventService: AdminEventService) {}
 
-  @Post('/create-event')
+  @Post("/create-event")
   async createEvent(
     @Req() req: Request,
-    @Body() event: eventDtoIn,
+    @Body() event: eventDtoIn
   ): Promise<void> {
     return await this.adminEventService.createEvent(req, event);
   }
 
-  @Patch('/submit-presence/:status')
+  @Patch("/submit-presence/:status")
   async submitPresence(@Req() req: Request, @Param() param): Promise<void> {
     // return await this.adminEventService;
   }

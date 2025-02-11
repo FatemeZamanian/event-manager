@@ -1,15 +1,15 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { RoleType } from '../../consts';
-import { UsersEntity } from './users.model';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { RoleType } from "../../consts";
+import { UsersEntity } from "./users.model";
 
 @Entity({
-  name: 'rols',
+  name: "rols",
 })
 export class RolesEntity {
-  @PrimaryGeneratedColumn('increment')
+  @PrimaryGeneratedColumn("increment")
   id: number;
 
-  @Column({ name: 'title', type: 'enum', nullable: false, enum: RoleType })
+  @Column({ name: "title", type: "enum", nullable: false, enum: RoleType })
   title: RoleType;
 
   //#########relations########

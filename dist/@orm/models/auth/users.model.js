@@ -18,27 +18,28 @@ let UsersEntity = class UsersEntity {
 };
 exports.UsersEntity = UsersEntity;
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)('increment'),
+    (0, typeorm_1.PrimaryGeneratedColumn)("increment"),
     __metadata("design:type", Number)
 ], UsersEntity.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ name: 'username', type: 'varchar', nullable: false, unique: true }),
+    (0, typeorm_1.Column)({ name: "username", type: "varchar", nullable: false, unique: true }),
     __metadata("design:type", String)
 ], UsersEntity.prototype, "username", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ name: 'email', type: 'varchar', nullable: false, unique: true }),
+    (0, typeorm_1.Column)({ name: "email", type: "varchar", nullable: false, unique: true }),
     __metadata("design:type", String)
 ], UsersEntity.prototype, "email", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ name: 'password', type: 'varchar', nullable: false }),
+    (0, typeorm_1.Column)({ name: "password", type: "varchar", nullable: false }),
     __metadata("design:type", String)
 ], UsersEntity.prototype, "password", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => roles_model_1.RolesEntity, (role) => role.users),
+    (0, typeorm_1.JoinColumn)({ name: "role_id" }),
     __metadata("design:type", roles_model_1.RolesEntity)
 ], UsersEntity.prototype, "role", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ name: 'role_id', type: 'int', nullable: false }),
+    (0, typeorm_1.Column)({ name: "role_id", type: "int", nullable: false }),
     __metadata("design:type", Number)
 ], UsersEntity.prototype, "roleId", void 0);
 __decorate([
@@ -51,7 +52,7 @@ __decorate([
 ], UsersEntity.prototype, "eventsWithUser", void 0);
 exports.UsersEntity = UsersEntity = __decorate([
     (0, typeorm_1.Entity)({
-        name: 'users',
+        name: "users",
     })
 ], UsersEntity);
 //# sourceMappingURL=users.model.js.map

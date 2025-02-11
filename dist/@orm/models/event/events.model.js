@@ -17,39 +17,40 @@ let EventsEntity = class EventsEntity {
 };
 exports.EventsEntity = EventsEntity;
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)('increment'),
+    (0, typeorm_1.PrimaryGeneratedColumn)("increment"),
     __metadata("design:type", Number)
 ], EventsEntity.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ name: 'title', type: 'varchar', nullable: false }),
+    (0, typeorm_1.Column)({ name: "title", type: "varchar", nullable: false }),
     __metadata("design:type", String)
 ], EventsEntity.prototype, "title", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ name: 'description', type: 'longtext', nullable: false }),
+    (0, typeorm_1.Column)({ name: "description", type: "text", nullable: false }),
     __metadata("design:type", String)
 ], EventsEntity.prototype, "description", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ name: 'registration_start_date', type: 'date', nullable: false }),
+    (0, typeorm_1.Column)({ name: "registration_start_date", type: "date", nullable: false }),
     __metadata("design:type", Date)
 ], EventsEntity.prototype, "registrationStartDate", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ name: 'registration_end_date', type: 'date', nullable: false }),
+    (0, typeorm_1.Column)({ name: "registration_end_date", type: "date", nullable: false }),
     __metadata("design:type", Date)
 ], EventsEntity.prototype, "registrationEndDate", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ name: 'start_date', type: 'date', nullable: false }),
+    (0, typeorm_1.Column)({ name: "start_date", type: "date", nullable: false }),
     __metadata("design:type", Date)
 ], EventsEntity.prototype, "startDate", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ name: 'end_date', type: 'date', nullable: false }),
+    (0, typeorm_1.Column)({ name: "end_date", type: "date", nullable: false }),
     __metadata("design:type", Date)
 ], EventsEntity.prototype, "endDate", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => users_model_1.UsersEntity, (admin) => admin.event),
+    (0, typeorm_1.JoinColumn)({ name: "admin_id" }),
     __metadata("design:type", users_model_1.UsersEntity)
 ], EventsEntity.prototype, "admin", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ name: 'admin_id', type: 'int', nullable: false }),
+    (0, typeorm_1.Column)({ name: "admin_id", type: "int", nullable: false }),
     __metadata("design:type", Number)
 ], EventsEntity.prototype, "adminId", void 0);
 __decorate([
@@ -58,7 +59,7 @@ __decorate([
 ], EventsEntity.prototype, "eventsWithUser", void 0);
 exports.EventsEntity = EventsEntity = __decorate([
     (0, typeorm_1.Entity)({
-        name: 'events',
+        name: "events",
     })
 ], EventsEntity);
 //# sourceMappingURL=events.model.js.map

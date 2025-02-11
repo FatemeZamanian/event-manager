@@ -18,7 +18,7 @@ let UsersWithEventsEntity = class UsersWithEventsEntity {
 };
 exports.UsersWithEventsEntity = UsersWithEventsEntity;
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)('increment'),
+    (0, typeorm_1.PrimaryGeneratedColumn)("increment"),
     __metadata("design:type", Number)
 ], UsersWithEventsEntity.prototype, "id", void 0);
 __decorate([
@@ -27,7 +27,7 @@ __decorate([
 ], UsersWithEventsEntity.prototype, "registrationDate", void 0);
 __decorate([
     (0, typeorm_1.Column)({
-        type: 'enum',
+        type: "enum",
         nullable: false,
         enum: consts_1.PresenceStatus,
         default: consts_1.PresenceStatus.ABSENCE,
@@ -36,23 +36,25 @@ __decorate([
 ], UsersWithEventsEntity.prototype, "presenceStatus", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => events_model_1.EventsEntity, (event) => event.eventsWithUser),
+    (0, typeorm_1.JoinColumn)({ name: "event_id" }),
     __metadata("design:type", events_model_1.EventsEntity)
 ], UsersWithEventsEntity.prototype, "events", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ name: 'event_id', type: 'int', nullable: false }),
+    (0, typeorm_1.Column)({ name: "event_id", type: "int", nullable: false }),
     __metadata("design:type", Number)
 ], UsersWithEventsEntity.prototype, "eventId", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => users_model_1.UsersEntity, (user) => user.eventsWithUser),
+    (0, typeorm_1.JoinColumn)({ name: "user_id" }),
     __metadata("design:type", users_model_1.UsersEntity)
 ], UsersWithEventsEntity.prototype, "user", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ name: 'user_id', type: 'int', nullable: false }),
+    (0, typeorm_1.Column)({ name: "user_id", type: "int", nullable: false }),
     __metadata("design:type", Number)
 ], UsersWithEventsEntity.prototype, "userId", void 0);
 exports.UsersWithEventsEntity = UsersWithEventsEntity = __decorate([
     (0, typeorm_1.Entity)({
-        name: 'users-with-events',
+        name: "users-with-events",
     })
 ], UsersWithEventsEntity);
 //# sourceMappingURL=users-with-events.model.js.map

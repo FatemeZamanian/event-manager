@@ -1,5 +1,5 @@
-import { UsersEntity } from '../auth/users.model';
-import { UsersWithEventsEntity } from './users-with-events.model';
+import { UsersEntity } from "../auth/users.model";
+import { UsersWithEventsEntity } from "./users-with-events.model";
 export declare class EventsEntity {
     id: number;
     title: string;

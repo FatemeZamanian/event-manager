@@ -1,20 +1,15 @@
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { Module } from "@nestjs/common";
+import { OrmModule } from "../@orm/module/orm.module";
+import { AuthModule } from "../auth/module/auth.module";
+import { DataSource } from "typeorm";
+import { JwtModule, JwtService } from "@nestjs/jwt";
+import { ConfigModule } from "@nestjs/config";
+
 @Module({
-  imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'root',
-      password: 'root',
-      database: 'event-manger',
-      entities: ['**/*.entity{.ts,.js}'],
-      synchronize: true,
-      autoLoadEntities: true,
-    }),
-  ],
+  imports: [OrmModule, AuthModule, ConfigModule.forRoot({ isGlobal: true })],
   controllers: [],
-  providers: [],
+  providers: [JwtService],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private dataSource: DataSource) {}
+}

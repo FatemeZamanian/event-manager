@@ -1,6 +1,6 @@
-import { RolesEntity } from './roles.model';
-import { EventsEntity } from '../event/events.model';
-import { UsersWithEventsEntity } from '../event/users-with-events.model';
+import { RolesEntity } from "./roles.model";
+import { EventsEntity } from "../event/events.model";
+import { UsersWithEventsEntity } from "../event/users-with-events.model";
 export declare class UsersEntity {
     id: number;
     username: string;

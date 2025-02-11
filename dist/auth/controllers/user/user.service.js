@@ -8,141 +8,98 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthUserService = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
-const await_to_js_1 = require("await-to-js");
 const typeorm_1 = require("typeorm");
 const bcrypt = require("bcrypt");
 const users_model_1 = require("../../../@orm/models/auth/users.model");
-const roles_model_1 = require("../../../@orm/models/auth/roles.model");
+const typeorm_2 = require("@nestjs/typeorm");
 let AuthUserService = class AuthUserService {
-    constructor(dataSource, jwt) {
+    constructor(dataSource, jwt, repoUsers) {
         this.dataSource = dataSource;
         this.jwt = jwt;
+        this.repoUsers = repoUsers;
     }
-    async validUser(body, queryRunner) {
+    async validUser(body) {
         const email = body.email.toLowerCase();
-        const [err, res] = await (0, await_to_js_1.default)(queryRunner.manager
-            .createQueryBuilder(users_model_1.UsersEntity, 'u')
-            .where('LOWER(u.email) = :email', { email })
-            .select(['u'])
-            .getOne());
-        if (err) {
-            throw new common_1.HttpException('error in db ', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        try {
+            const user = await this.repoUsers
+                .createQueryBuilder("u")
+                .where("LOWER(u.email) = :email", { email })
+                .select(["u"])
+                .getOne();
+            if (!user) {
+                throw new common_1.HttpException("User not found", common_1.HttpStatus.NOT_FOUND);
+            }
+            const validPassword = await bcrypt.compare(body.password, user.password);
+            if (!validPassword) {
+                throw new common_1.HttpException("Wrong password", common_1.HttpStatus.FORBIDDEN);
+            }
+            return user;
         }
-        if (!res) {
-            throw new common_1.HttpException('not found user', common_1.HttpStatus.NOT_FOUND);
+        catch (err) {
+            throw new common_1.HttpException("Database error", common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        const validPassword = await bcrypt.compare(body.password, res.password);
-        if (!validPassword) {
-            throw new common_1.HttpException('wrong password ', common_1.HttpStatus.FORBIDDEN);
-        }
-        return res;
     }
-    async createUserToken(res) {
-        const obj = {
-            id: res.id,
-            username: res.username,
-            email: res.email,
-            role: res.roleId,
-        };
-        const retVal = {
-            token: await this.jwt.sign(obj),
-        };
-        return retVal;
+    async findUserData(user) {
+        try {
+            const result = await this.repoUsers
+                .createQueryBuilder("u")
+                .where("u.id = :id", { id: user.id })
+                .select(["u"])
+                .getOne();
+            if (!result) {
+                throw new common_1.HttpException("User not found", common_1.HttpStatus.NOT_FOUND);
+            }
+            return result;
+        }
+        catch (err) {
+            throw new common_1.HttpException("Database error", common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-    async findUserData(res, queryRunner) {
-        const userId = res.id;
-        const [err, result] = await (0, await_to_js_1.default)(queryRunner.manager
-            .createQueryBuilder(users_model_1.UsersEntity, 'u')
-            .where('u.id = :userId', { userId })
-            .select(['u'])
-            .getOne());
-        if (err) {
-            throw new common_1.HttpException('error in db ', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        if (!result) {
-            throw new common_1.HttpException('not found user', common_1.HttpStatus.NOT_FOUND);
-        }
-        return result;
+    async createUserToken(user) {
+        const payload = {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            role: user.roleId,
+        };
+        return { token: this.jwt.sign(payload) };
     }
     async registerUser(user) {
         if (user.password.length < 6) {
-            throw new common_1.HttpException('password must be longer than 6 character', common_1.HttpStatus.BAD_REQUEST);
+            throw new common_1.HttpException("Password must be longer than 6 characters", common_1.HttpStatus.BAD_REQUEST);
         }
-        const queryRunner = this.dataSource.createQueryRunner();
-        await queryRunner.connect();
-        await queryRunner.startTransaction();
         try {
-            await this.saveUser(user, queryRunner);
-            await queryRunner.commitTransaction();
+            const salt = bcrypt.genSaltSync(10);
+            user.password = bcrypt.hashSync(user.password, salt);
+            await this.repoUsers.save({
+                username: user.username,
+                email: user.email,
+                password: user.password,
+                roleId: 2,
+            });
         }
         catch (err) {
-            await queryRunner.rollbackTransaction();
-            if (err.message.includes('duplicate')) {
-                throw new common_1.HttpException('username or email already exists', common_1.HttpStatus.BAD_REQUEST);
+            if (err?.code === "23505") {
+                throw new common_1.HttpException("Username or email already exists", common_1.HttpStatus.BAD_REQUEST);
             }
-            throw new common_1.HttpException('not found user', common_1.HttpStatus.NOT_FOUND);
+            throw new common_1.HttpException("Database error", common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        finally {
-            await queryRunner.release();
-        }
-    }
-    async checkEmail(inp, queryRunner) {
-        const email = inp.toLocaleLowerCase();
-        const [err, data] = await (0, await_to_js_1.default)(queryRunner.manager
-            .createQueryBuilder(users_model_1.UsersEntity, 'u')
-            .innerJoin('u.role', 'r')
-            .where('u.email=:email', { email })
-            .select(['u.id', 'r'])
-            .getOne());
-        if (err) {
-            throw new common_1.HttpException('error in db ', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        if (!data) {
-            throw new common_1.HttpException('token not found ', common_1.HttpStatus.BAD_REQUEST);
-        }
-        return data;
-    }
-    async saveUser(user, queryRunner) {
-        const salt = bcrypt.genSaltSync(10);
-        user.password = bcrypt.hashSync(user.password, salt);
-        const role = await this.getRole(1, queryRunner);
-        const [err, retVal] = await (0, await_to_js_1.default)(queryRunner.manager.save(users_model_1.UsersEntity, {
-            username: user.username,
-            email: user.email,
-            password: user.password,
-            role: role,
-        }));
-        if (err) {
-            if (err.message.includes('duplicate')) {
-                throw new common_1.HttpException('user is exists ', common_1.HttpStatus.CONFLICT);
-            }
-            throw new common_1.HttpException('error in db ', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return retVal;
-    }
-    async getRole(roleId, queryRunner) {
-        const [err, res] = await (0, await_to_js_1.default)(queryRunner.manager
-            .createQueryBuilder(roles_model_1.RolesEntity, 'r')
-            .where('r.id = :roleId', { roleId })
-            .select(['r'])
-            .getOne());
-        if (err) {
-            throw new common_1.HttpException('error in db ', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        if (!res) {
-            throw new common_1.HttpException('not found user ', common_1.HttpStatus.NOT_FOUND);
-        }
-        return res;
+        return "User created successfully";
     }
 };
 exports.AuthUserService = AuthUserService;
 exports.AuthUserService = AuthUserService = __decorate([
     (0, common_1.Injectable)(),
+    __param(2, (0, typeorm_2.InjectRepository)(users_model_1.UsersEntity)),
     __metadata("design:paramtypes", [typeorm_1.DataSource,
-        jwt_1.JwtService])
+        jwt_1.JwtService,
+        typeorm_1.Repository])
 ], AuthUserService);
 //# sourceMappingURL=user.service.js.map

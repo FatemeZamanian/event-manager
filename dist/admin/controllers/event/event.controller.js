@@ -16,6 +16,7 @@ exports.AdminEventController = void 0;
 const common_1 = require("@nestjs/common");
 const event_dto_1 = require("./event.dto");
 const event_service_1 = require("./event.service");
+const swagger_1 = require("@nestjs/swagger");
 let AdminEventController = class AdminEventController {
     constructor(adminEventService) {
         this.adminEventService = adminEventService;
@@ -28,7 +29,7 @@ let AdminEventController = class AdminEventController {
 };
 exports.AdminEventController = AdminEventController;
 __decorate([
-    (0, common_1.Post)('/create-event'),
+    (0, common_1.Post)("/create-event"),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -36,7 +37,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AdminEventController.prototype, "createEvent", null);
 __decorate([
-    (0, common_1.Patch)('/submit-presence/:status'),
+    (0, common_1.Patch)("/submit-presence/:status"),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Param)()),
     __metadata("design:type", Function),
@@ -44,7 +45,8 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AdminEventController.prototype, "submitPresence", null);
 exports.AdminEventController = AdminEventController = __decorate([
-    (0, common_1.Controller)('admin'),
+    (0, swagger_1.ApiTags)("Admin / Events"),
+    (0, common_1.Controller)("admin"),
     __metadata("design:paramtypes", [event_service_1.AdminEventService])
 ], AdminEventController);
 //# sourceMappingURL=event.controller.js.map
